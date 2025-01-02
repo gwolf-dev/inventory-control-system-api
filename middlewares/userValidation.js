@@ -1,5 +1,6 @@
 module.exports = async (request, response, next) => {
-  const { name, email, password, confirmPassword, phone } = request.body;
+  const { name, email, password, confirmPassword, phone, language } =
+    request.body;
 
   if (!name)
     return response
@@ -15,6 +16,11 @@ module.exports = async (request, response, next) => {
     return response
       .status(400)
       .json({ message: 'O campo phone é obrigatório!' });
+
+  if (!language)
+    return response
+      .status(400)
+      .json({ message: 'O campo language é obrigatório!' });
 
   if (!password)
     return response

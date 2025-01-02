@@ -1,15 +1,16 @@
 const connection = require('./config/connection');
 
 const register = async (parameters) => {
-  const { name, email, phone, password, image } = parameters;
+  const { name, email, phone, password, language, image } = parameters;
   const query =
-    'INSERT INTO users(name, email, phone, password, image) VALUES (?, ?, ?, ?, ?);';
+    'INSERT INTO users(name, email, phone, password, language, image) VALUES (?, ?, ?, ?, ?, ?);';
 
   const [user] = await connection.execute(query, [
     name,
     email,
     phone,
     password,
+    language,
     image,
   ]);
 

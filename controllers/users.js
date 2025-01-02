@@ -1,9 +1,10 @@
 const bcrypt = require('bcrypt');
 
 const model = require('../models/users');
+const createUserToken = require('../helpers/createUserToken');
 
 const register = async (request, response) => {
-  const { name, email, password, phone, image } = request.body;
+  const { email, password, image } = request.body;
 
   if (email) {
     const emailExists = await model.findByEmail(email);
@@ -20,17 +21,13 @@ const register = async (request, response) => {
 
   try {
     const user = await model.register({
-      name,
+      ...request.body,
       email,
-      phone,
       password: passwordHash,
       image: !image || image.length === 0 ? null : image,
     });
 
-    return response.status(201).json({
-      userId: user.insertId,
-      message: 'Usuário cadastrado com sucesso!',
-    });
+    await createUserToken(user, request, response);
   } catch (error) {
     return response.status(500).json({ message: error });
   }
