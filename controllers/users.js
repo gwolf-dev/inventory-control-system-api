@@ -5,6 +5,47 @@ const createUserToken = require('../helpers/createUserToken');
 const getToken = require('../helpers/getToken');
 const model = require('../models/users');
 
+const edit = async (request, response) => {
+  const { id } = request.params;
+  const { name, email, phone, password, confirmPassword, language } =
+    request.body;
+  const user = request.user;
+  const userExists = await model.findById(id);
+  const emailExists = await model.findByEmail(email);
+
+  if (!userExists)
+    return response.status(400).json({ message: 'Usuário não existe' });
+
+  if (user.email !== email && emailExists)
+    return response.status(400).json({
+      message:
+        'Por favor, utilize outro e-mail que não foi cadastrado na plataforma.',
+    });
+
+  if (password === confirmPassword && password !== null) {
+    const salt = await bcrypt.genSalt(12);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    user.password = passwordHash;
+  }
+
+  user.email = email;
+  user.name = name;
+  user.phone = phone;
+  user.language = language;
+
+  try {
+    await model.update(id, user);
+
+    return response
+      .status(200)
+      .json({ message: 'Usuário atualizado com sucesso!' });
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ message: error.message });
+  }
+};
+
 const checkAuth = (request, response) => {
   const { authorization } = request.headers;
   let currentUser = null;
@@ -14,8 +55,6 @@ const checkAuth = (request, response) => {
     const decoded = jwt.verify(token, process.env.SECRET_JWT);
 
     currentUser = decoded;
-  } else {
-    // talvez fazer um 403
   }
 
   response.status(200).json(currentUser);
@@ -66,8 +105,9 @@ const register = async (request, response) => {
 
     await createUserToken(user, request, response);
   } catch (error) {
-    response.status(500).json({ message: error });
+    console.error(error);
+    return response.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { checkAuth, login, register };
+module.exports = { edit, checkAuth, login, register };
