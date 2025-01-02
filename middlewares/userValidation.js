@@ -1,4 +1,20 @@
-module.exports = async (request, response, next) => {
+const login = (request, response, next) => {
+  const { email, password } = request.body;
+
+  if (!email)
+    return response
+      .status(400)
+      .json({ message: 'O campo email é obrigatório!' });
+
+  if (!password)
+    return response
+      .status(400)
+      .json({ message: 'O campo password é obrigatório!' });
+
+  next();
+};
+
+const register = async (request, response, next) => {
   const { name, email, password, confirmPassword, phone, language } =
     request.body;
 
@@ -45,3 +61,5 @@ module.exports = async (request, response, next) => {
 
   next();
 };
+
+module.exports = { login, register };

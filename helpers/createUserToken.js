@@ -5,13 +5,16 @@ const createUserToken = async (user, request, response) => {
     {
       id: user.id,
       name: user.name,
+      email: user.email,
+      image: user.image,
+      phone: user.phone,
       userLanguage: user.language,
     },
     process.env.SECRET_JWT,
   );
 
-  return response.status(201).json({
-    message: 'Usuário criado e autenticado com sucesso!',
+  return response.status(200).json({
+    message: 'Autenticação realizada com sucesso!',
     token,
   });
 };
