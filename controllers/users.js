@@ -13,6 +13,12 @@ const edit = async (request, response) => {
   const userExists = await model.findById(id);
   const emailExists = await model.findByEmail(email);
 
+  if (request.file) {
+    user.image = request.file.filename;
+  } else {
+    user.image = null;
+  }
+
   if (!userExists)
     return response.status(400).json({ message: 'Usuário não existe' });
 

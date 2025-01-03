@@ -34,9 +34,9 @@ const register = async (parameters) => {
 };
 
 const update = async (id, parameters) => {
-  const { name, email, phone, password, language } = parameters;
+  const { name, email, phone, password, language, image } = parameters;
   const query =
-    'UPDATE users SET name = ?, email = ?, phone = ?, password = ?, language = ? WHERE id = ?';
+    'UPDATE users SET name = ?, email = ?, phone = ?, password = ?, language = ?, image = ? WHERE id = ?';
 
   const [updatedUser] = await connection.execute(query, [
     name,
@@ -44,6 +44,7 @@ const update = async (id, parameters) => {
     phone,
     password,
     language,
+    image,
     id,
   ]);
   return updatedUser;

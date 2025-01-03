@@ -2,6 +2,7 @@ const express = require('express');
 
 const users = require('./controllers/users');
 
+const { imageUpload } = require('./helpers/imageUpload');
 const userValidation = require('./middlewares/userValidation');
 const verifyToken = require('./middlewares/verifyToken');
 
@@ -12,6 +13,7 @@ router.patch(
   '/users/edit/:id',
   verifyToken,
   userValidation.register,
+  imageUpload.single('image'),
   users.edit,
 );
 router.post('/users/login', userValidation.login, users.login);
